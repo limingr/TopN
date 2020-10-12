@@ -14,27 +14,28 @@ import requests
 # Top-N repos by number of Pull Requests (PRs).
 # Top-N repos by contribution percentage (PRs/forks).
 #
+usage="Please provide an org name,  N and a valid github user name and password such as: organization=Twitter N=5 user password"
 
 if len(sys.argv) < 5:
-   sys.exit("Please provide an org name,  N and a valid github user name and password such as: organization=Twitter N=5 user password")
+   sys.exit(usage)
 
 org_para=sys.argv[1]
 top_Npara=sys.argv[2]
 
 if not org_para.startswith("organization="):
-    sys.exit("The orgination parameter is not in correct format, the parameters should be similar to:   organization=Twitter N=5 user password ")
+    sys.exit(usage)
 
 org_len=len("organization=");
 organization=org_para[org_len:]
 
 if not top_Npara.startswith("N="):
-    sys.exit("The N parameter is not in correct format, the parameters should be similar to:   organization=Twitter N=5 user password")
+    sys.exit(usage)
 
 try:
     top_NLen=len("N=")
     top_N=(int)(top_Npara[top_NLen:])
 except ValueError:
-    sys.exit("Please provide an org name and N such as:   organization=Twitter N=5 user password")
+    sys.exit(usage)
 
 
 #print("organization="+organization)
@@ -44,13 +45,13 @@ if  top_N<=0:
     sys.exit("The value of N={N} is invalid".format(N=top_N))
 
 if len(organization) == 0:
-   sys.exit("The value of organization={organization} is invalid".format(organization=organization))
+   sys.exit(usage)
 
 username =  sys.argv[3]
 password =  sys.argv[4]
 
 if len(password)==0 or len(password)==0:
-   sys.exit("Please provide a valid github user name and password, thanks.")
+   sys.exit(usage)
 
 url="https://api.github.com/orgs/"+organization+"/repos"
 #print("Requesting "+url)
@@ -59,7 +60,7 @@ contents = requests.get("https://api.github.com/orgs/"+organization+"/repos", au
 
 if contents.status_code != 200: ## OK
    print("Http returns {sc}.".format(sc=contents.status_code));
-   sys.exit("Please provide a github valid user name and password, thanks.")
+   sys.exit(usage)
 
 
 repos = contents.json()
